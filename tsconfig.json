@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "target": "ES2015",
+        "lib": [
+            "DOM",
+            "DOM.Iterable",
+            "ESNext"
+        ],
+        "sourceMap": false,
+        "declaration": true,
+        "outDir": "dist",
+        "skipLibCheck": true,
+        "esModuleInterop": true,
+        "allowSyntheticDefaultImports": true,
+        "strict": true,
+        "forceConsistentCasingInFileNames": true,
+        "module": "ESNext",
+        "moduleResolution": "Node",
+        "resolveJsonModule": true
+    },
+    "include": [
+        "src",
+        "@types"
+    ]
+}
