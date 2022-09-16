@@ -1,6 +1,7 @@
 import * as cosmosProvider from './cosmos/cosmos.provider';
 
 export type Cosmos = typeof cosmosProvider;
+export { cosmosProvider };
 
 export function isInstalled(): boolean {
   return !!window.vectis;

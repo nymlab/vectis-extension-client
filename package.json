@@ -1,6 +1,6 @@
 {
   "name": "@vectis/extension-client",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Client for vectis extension",
   "main": "index.js",
   "types": "index.d.ts",
@@ -14,6 +14,7 @@
     "build": "tsc",
     "postbuild": "cpy package.json dist",
     "publish:dev": "npm run build && cd dist && npm publish --dry-run",
+    "publish:ci": "npm run build && cd dist && npm publish",
     "prettier": "prettier --write \"src/**/*.ts\""
   },
   "devDependencies": {

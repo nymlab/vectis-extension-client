@@ -1,5 +1,5 @@
 import { AminoSignResponse, StdSignDoc } from '@cosmjs/amino';
-import { DirectSignResponse } from '@cosmjs/proto-signing';
+import { DirectSignResponse, OfflineSigner } from '@cosmjs/proto-signing';
 import { SignDoc } from 'cosmjs-types/cosmos/tx/v1beta1/tx';
 import { CosmosProvider } from '../types/cosmos';
 import { ChainInfo, KeyInfo } from '../types/vectis';
@@ -19,6 +19,10 @@ export async function getKey(chainId: string): Promise<KeyInfo> {
 export async function getAccount(chainId: string): Promise<{ address: string; name: string }> {
   const { address, name } = await getKey(chainId);
   return { address, name };
+}
+
+export async function getOfflineSigner(chainId: string): Promise<OfflineSigner> {
+  return await window.vectis.cosmos.getOfflineSigner(chainId);
 }
 
 export async function suggestChains(chainsInfo: ChainInfo[]): Promise<void> {
