@@ -1,0 +1,42 @@
+{
+  "name": "@vectis/extension-client",
+  "version": "0.7.0",
+  "description": "Client for vectis extension",
+  "types": "./build/cjs/types/index.d.ts",
+  "main": "./build/cjs/index.js",
+  "license": "Apache-2.0",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./build/esm/types/index.d.ts",
+        "default": "./build/esm/index.mjs"
+      },
+      "require": {
+        "types": "./build/cjs/types/index.d.ts",
+        "default": "./build/cjs/index.js"
+      }
+    }
+  },
+  "publishConfig": {
+    "access": "public",
+    "registry": "https://registry.npmjs.org"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "prebuild": "rimraf build",
+    "build": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc -p ./tsconfig.esm.json && mv build/esm/index.js build/esm/index.mjs",
+    "build:cjs": "tsc -p ./tsconfig.cjs.json",
+    "publish:dev": "npm run build && npm publish --dry-run",
+    "publish:ci": "npm run build && npm publish",
+    "prettier": "prettier --write \"src/**/*.ts\""
+  },
+  "devDependencies": {
+    "@types/long": "^4.0.1",
+    "prettier": "^2.7.1",
+    "rimraf": "^3.0.2",
+    "typescript": "^4.8.3"
+  }
+}

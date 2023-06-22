@@ -1,4 +1,4 @@
-import { CosmosProvider } from './cosmos';
+import { CosmosProvider } from './vectis';
 
 export interface VectisWindow {
   vectis: {
