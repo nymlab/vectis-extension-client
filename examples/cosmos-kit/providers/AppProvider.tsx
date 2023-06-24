@@ -3,15 +3,17 @@ import toast from "react-hot-toast";
 import { useLocalStorage } from "react-use";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { GasPrice } from "@cosmjs/stargate";
-import { VectisCosmosProvider, getVectisForCosmos, KeyInfo } from "@vectis/extension-client";
 
 import { ITodo } from "../interfaces/ITodo";
 import { TodoStatus } from "../interfaces/TodoStatus";
+import { useChainWallet } from "@cosmos-kit/react-lite";
+import { wallets as VectisWallet } from "@cosmos-kit/vectis-extension";
+import { WalletAccount } from "@cosmos-kit/core/types";
 
 const JUNO_TODO_CODE_ID = 2545;
 
 interface AppContextValue {
-  userKey: KeyInfo | null;
+  userKey: WalletAccount | null;
   connectWallet: () => void;
   todos: ITodo[];
   addTodo: (description: string) => void;
@@ -27,10 +29,9 @@ export const AppContext = React.createContext<AppContextValue | null>(null);
 
 const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [todos, setTodos] = useState<ITodo[]>([]);
-  const [userKey, setUserKey] = useState<KeyInfo | null>(null);
-  const [vectisClient, setVectisClient] = useState<VectisCosmosProvider | null>(null);
+  const { getOfflineSignerDirect, enable, connect, getAccount, address } = useChainWallet("junotestnet", VectisWallet[0].walletName);
+  const [userKey, setUserKey] = useState<WalletAccount | null>(null);
   const [client, setClient] = useState<SigningCosmWasmClient | null>(null);
-  const [allowPermission, setAllowPermission] = useLocalStorage<boolean>("allowPermission");
   const [contractAddr, setContractAddr] = useLocalStorage<string>(`contractAddr`);
 
   const instantiateTodoContract = async () => {
@@ -53,20 +54,17 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   const connectWallet = async () => {
     try {
-      const vectis = await getVectisForCosmos();
-      // Enable connection to allow read and write permission;
-      const key = await vectis.getKey("uni-6" /* Juno-testnet */);
-      // This method decide for you what is the best signer to sign transaction
-      const signer = await vectis.getOfflineSignerAuto("uni-6" /* Juno-testnet */);
+      await enable();
+      await connect();
+      const key = await getAccount();
+      const signer = getOfflineSignerDirect();
 
       const client = await SigningCosmWasmClient.connectWithSigner("https://rpc.testcosmos.directory/junotestnet", signer, {
         gasPrice: GasPrice.fromString("0.005ujunox"),
       });
 
       setUserKey(key);
-      setVectisClient(vectis);
       setClient(client);
-      setAllowPermission(true);
     } catch (err) {
       console.log(err);
       toast.error(err as string);
@@ -116,19 +114,13 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   };
 
   useEffect(() => {
-    if (allowPermission) connectWallet();
+    if (address) connectWallet();
   }, []);
-
-  useEffect(() => {
-    if (!vectisClient) return;
-    vectisClient.onAccountChange(connectWallet);
-    return () => vectisClient.offAccountChange(connectWallet);
-  }, [vectisClient]);
 
   useEffect(() => {
     if (!contractAddr || !client) return;
     queryTodos();
-  }, [client]);
+  }, [client, contractAddr, client]);
 
   return (
     <AppContext.Provider
