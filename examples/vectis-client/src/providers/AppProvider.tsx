@@ -8,7 +8,21 @@ import { VectisCosmosProvider, getVectisForCosmos, KeyInfo } from "@vectis/exten
 import { ITodo } from "../interfaces/ITodo";
 import { TodoStatus } from "../interfaces/TodoStatus";
 
-const JUNO_TODO_CODE_ID = 2545;
+const CODES_ID = {
+  "uni-6": 2545,
+  "elgafar-1": 2609,
+};
+
+const CHAIN_CONFIG = {
+  "uni-6": {
+    gasPrice: GasPrice.fromString("0.003ujunox"),
+    rpcUrl: "https://rpc.testcosmos.directory/junotestnet",
+  },
+  "elgafar-1": {
+    gasPrice: GasPrice.fromString("0.04ustars"),
+    rpcUrl: "https://rpc.testcosmos.directory/stargazetestnet",
+  },
+};
 
 interface AppContextValue {
   userKey: KeyInfo | null;
@@ -21,22 +35,25 @@ interface AppContextValue {
   deleteTodo: (id: number) => void;
   updateTodoDescription: (id: number, description: string) => void;
   updateTodoStatus: (id: number, status: TodoStatus) => void;
+  setChain: (chain: string) => void;
+  chain: string;
 }
 
 export const AppContext = React.createContext<AppContextValue | null>(null);
 
 const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [todos, setTodos] = useState<ITodo[]>([]);
+  const [chain, setChain] = useState("uni-6");
   const [userKey, setUserKey] = useState<KeyInfo | null>(null);
   const [vectisClient, setVectisClient] = useState<VectisCosmosProvider | null>(null);
   const [client, setClient] = useState<SigningCosmWasmClient | null>(null);
   const [allowPermission, setAllowPermission] = useLocalStorage<boolean>("allowPermission");
-  const [contractAddr, setContractAddr] = useLocalStorage<string>(`contractAddr`);
+  const [contractAddr, setContractAddr] = useLocalStorage<string>(`${userKey?.address}contractAddr`);
 
   const instantiateTodoContract = async () => {
     if (!userKey || !client) return toast.error("Please connect your wallet");
     const { contractAddress } = await toast.promise(
-      client.instantiate(userKey.address, JUNO_TODO_CODE_ID, { owner: userKey.address }, "Todo-List", "auto"),
+      client.instantiate(userKey.address, CODES_ID[chain as keyof typeof CODES_ID], { owner: userKey.address }, "Todo-List", "auto"),
       {
         loading: "Loading...",
         success: "Instantiated!",
@@ -55,12 +72,13 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
     try {
       const vectis = await getVectisForCosmos();
       // Enable connection to allow read and write permission;
-      const key = await vectis.getKey("uni-6" /* Juno-testnet */);
+      const key = await vectis.getKey(chain);
       // This method decide for you what is the best signer to sign transaction
-      const signer = await vectis.getOfflineSignerAuto("uni-6" /* Juno-testnet */);
+      const signer = await vectis.getOfflineSignerAuto(chain);
 
-      const client = await SigningCosmWasmClient.connectWithSigner("https://rpc.testcosmos.directory/junotestnet", signer, {
-        gasPrice: GasPrice.fromString("0.005ujunox"),
+      const config = CHAIN_CONFIG[chain as keyof typeof CHAIN_CONFIG];
+      const client = await SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
+        gasPrice: config.gasPrice,
       });
 
       setUserKey(key);
@@ -117,7 +135,7 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   useEffect(() => {
     if (allowPermission) connectWallet();
-  }, []);
+  }, [chain]);
 
   useEffect(() => {
     if (!vectisClient) return;
@@ -143,6 +161,8 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         deleteTodo,
         updateTodoDescription,
         updateTodoStatus,
+        chain,
+        setChain,
       }}
     >
       {children}

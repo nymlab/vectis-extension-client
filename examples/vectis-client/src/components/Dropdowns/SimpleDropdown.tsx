@@ -12,10 +12,7 @@ interface DropdownProps {
   }[];
 }
 
-const SimpleDropdown: React.FC<PropsWithChildren<DropdownProps>> = ({
-  options,
-  children,
-}) => {
+const SimpleDropdown: React.FC<PropsWithChildren<DropdownProps>> = ({ options, children }) => {
   const [open, setOpen] = useState<boolean>(false);
   const dropdownRef = useRef(null);
 
@@ -30,7 +27,7 @@ const SimpleDropdown: React.FC<PropsWithChildren<DropdownProps>> = ({
       <li key={el.name}>
         <div
           className={clsx(
-            `p-2 w-full whitespace-nowrap bg-transparent text-slate-300 hover:cursor-pointer hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-400 hover:via-pink-400 hover:to-indigo-500 ${
+            `p-2 w-fit whitespace-nowrap bg-transparent text-slate-300 hover:cursor-pointer hover:text-transparent hover:bg-clip-text hover:bg-gradient-to-r hover:from-amber-400 hover:via-pink-400 hover:to-indigo-500 ${
               el.disabled ? "text-gray-500" : ""
             }`,
             el.style
@@ -38,7 +35,7 @@ const SimpleDropdown: React.FC<PropsWithChildren<DropdownProps>> = ({
           onClick={el.disabled ? () => {} : click}
         >
           <p className="flex items-center gap-2">
-            <span className={`capitalize`}>{el.name}</span>
+            <p className={`capitalize`}>{el.name}</p>
           </p>
         </div>
       </li>
@@ -49,27 +46,17 @@ const SimpleDropdown: React.FC<PropsWithChildren<DropdownProps>> = ({
     <div className="relative w-full" ref={dropdownRef}>
       <button
         className={clsx(
-          `bg-transparent rounded-[4px] hover:bg-white/5 flex items-center justify-between gap-2 p-2 transition duration-75 ease-in-out border border-slate-50`
+          `w-[120px] bg-transparent rounded-[4px] text-white hover:bg-white/5 flex items-center justify-between gap-2 p-2 transition duration-75 ease-in-out border border-slate-50`
         )}
         type="button"
         onClick={() => setOpen(!open)}
       >
         {children}
-        <div
-          className={clsx(
-            "flex items-center transition duration-75 ease-in-out right-[80px]",
-            open ? "rotate-180" : ""
-          )}
-        >
+        <div className={clsx("flex items-center transition duration-75 ease-in-out right-[80px]", open ? "rotate-180" : "")}>
           <MdOutlineKeyboardArrowDown size={24} />
         </div>
       </button>
-      <ul
-        className={clsx(
-          `absolute left-0 bg-slate-700 z-50 float text-left rounded-[4px] m-0 bg-clip-padding w-full`,
-          !open && "hidden"
-        )}
-      >
+      <ul className={clsx(`absolute left-0 bg-slate-700 z-50 float text-left rounded-[4px] m-0 bg-clip-padding w-full`, !open && "hidden")}>
         {OptionsItems}
       </ul>
     </div>
