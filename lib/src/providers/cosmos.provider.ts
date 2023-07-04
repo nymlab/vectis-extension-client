@@ -6,7 +6,8 @@ import {
   OfflineAminoSigner,
   OfflineDirectSigner,
   SignDoc,
-  StdSignDoc
+  StdSignDoc,
+  StdSignature
 } from '../types/cosmos';
 import { ChainInfo, KeyInfo, CosmosProvider } from '../types';
 
@@ -49,7 +50,15 @@ export class VectisCosmosProvider {
     return await this.getClient().signDirect(signerAddress, doc);
   }
 
-  async getOfflineSignerAuto(chainId: string): Promise<OfflineSigner> {
+  async signArbitrary(chainId: string, signerAddress: string, message: string | Uint8Array): Promise<AminoSignResponse> {
+    return await this.getClient().signArbitrary(chainId, signerAddress, message);
+  }
+
+  async verifyArbitrary(chainId: string, signerAddress: string, message: string | Uint8Array, signature: StdSignature): Promise<boolean> {
+    return await this.getClient().verifyArbitrary(chainId, signerAddress, message, signature);
+  }
+
+  async getOfflineSignerAuto(chainId: string): Promise<OfflineAminoSigner | OfflineDirectSigner> {
     return await this.getClient().getOfflineSignerAuto(chainId);
   }
 

@@ -6,7 +6,8 @@ import {
   OfflineDirectSigner,
   OfflineSigner,
   SignDoc,
-  StdSignDoc
+  StdSignDoc,
+  StdSignature
 } from './cosmos';
 
 type Algo = 'secp256k1' | 'ethsecp256k1';
@@ -28,6 +29,8 @@ export interface CosmosProvider {
   getAccounts(chainId: string): Promise<AccountData[]>;
   signAmino(signerAddress: string, doc: StdSignDoc): Promise<AminoSignResponse>;
   signDirect(signerAddress: string, doc: SignDoc): Promise<DirectSignResponse>;
+  signArbitrary(chainId: string, signerAddress: string, message: string | Uint8Array): Promise<AminoSignResponse>;
+  verifyArbitrary(chainId: string, signerAddress: string, message: string | Uint8Array, signature: StdSignature): Promise<boolean>;
   getOfflineSignerAmino(chainId: string): OfflineAminoSigner;
   getOfflineSignerDirect(chainId: string): OfflineDirectSigner;
   getOfflineSigner(chainId: string): OfflineSigner;
@@ -35,7 +38,7 @@ export interface CosmosProvider {
    * Detect what signer should use based on the key type
    * Ex: Nano ledger only supports amino signing.
    */
-  getOfflineSignerAuto(chainId: string): Promise<OfflineSigner>;
+  getOfflineSignerAuto(chainId: string): Promise<OfflineAminoSigner | OfflineDirectSigner>;
 }
 
 export interface ChainInfo {

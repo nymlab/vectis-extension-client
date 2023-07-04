@@ -106,4 +106,4 @@ export interface OfflineAminoSigner {
   readonly signAmino: (signerAddress: string, signDoc: StdSignDoc) => Promise<AminoSignResponse>;
 }
 
-export declare type OfflineSigner = OfflineAminoSigner | OfflineDirectSigner;
+export declare type OfflineSigner = OfflineAminoSigner & OfflineDirectSigner;

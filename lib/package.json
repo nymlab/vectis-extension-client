@@ -1,6 +1,6 @@
 {
   "name": "@vectis/extension-client",
-  "version": "0.7.0",
+  "version": "0.7.2",
   "description": "Client for vectis extension",
   "types": "./build/cjs/types/index.d.ts",
   "main": "./build/cjs/index.js",
