@@ -71,6 +71,7 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const connectWallet = async () => {
     try {
       const vectis = await getVectisForCosmos();
+      await vectis.enable(chain);
       // Enable connection to allow read and write permission;
       const key = await vectis.getKey(chain);
       // This method decide for you what is the best signer to sign transaction

@@ -8,7 +8,7 @@ import {
   SignDoc,
   StdSignDoc
 } from '../types/cosmos';
-import { ChainInfo, KeyInfo, CosmosProvider } from '../types';
+import { KeyInfo, CosmosProvider } from '../types';
 
 export class VectisCosmosProvider {
   getClient(): CosmosProvider {
@@ -16,8 +16,8 @@ export class VectisCosmosProvider {
     throw new Error('Vectis is not installed');
   }
 
-  async enable(chainIds: string | string[]): Promise<void> {
-    await this.getClient().enable(chainIds);
+  async enable(chainId: string): Promise<void> {
+    await this.getClient().enable(chainId);
   }
 
   async getKey(chainId: string): Promise<KeyInfo> {
@@ -26,19 +26,6 @@ export class VectisCosmosProvider {
 
   async getAccount(chainId: string): Promise<AccountData[]> {
     return await this.getClient().getAccounts(chainId);
-  }
-
-  async getSupportedChains(): Promise<ChainInfo[]> {
-    return await this.getClient().getSupportedChains();
-  }
-
-  async suggestChains(chainsInfo: ChainInfo[]): Promise<void> {
-    await this.getClient().suggestChains(chainsInfo);
-  }
-
-  async isChainSupported(chainId: string): Promise<boolean> {
-    const supportedChains = await this.getClient().getSupportedChains();
-    return supportedChains.some((c) => c.chainId === chainId);
   }
 
   async signAmino(signerAddress: string, doc: StdSignDoc): Promise<AminoSignResponse> {

@@ -6,10 +6,10 @@ import {
   OfflineDirectSigner,
   OfflineSigner,
   SignDoc,
-  StdSignDoc
+  StdSignDoc,
+  Algo
 } from './cosmos';
 
-type Algo = 'secp256k1' | 'ethsecp256k1';
 export interface KeyInfo {
   algo: Algo;
   name: string;
@@ -21,9 +21,7 @@ export interface KeyInfo {
 }
 
 export interface CosmosProvider {
-  suggestChains(chainsInfo: ChainInfo[]): Promise<void>;
-  enable(chainIds: string | string[]): Promise<void>;
-  getSupportedChains(): Promise<ChainInfo[]>;
+  enable(chainId: string): Promise<void>;
   getKey(chainId: string): Promise<KeyInfo>;
   getAccounts(chainId: string): Promise<AccountData[]>;
   signAmino(signerAddress: string, doc: StdSignDoc): Promise<AminoSignResponse>;
@@ -37,54 +35,3 @@ export interface CosmosProvider {
    */
   getOfflineSignerAuto(chainId: string): Promise<OfflineSigner>;
 }
-
-export interface ChainInfo {
-  readonly rpcUrl: string;
-  readonly restUrl: string;
-  readonly chainId: string;
-  readonly chainName: string;
-  readonly prettyName: string;
-  readonly bech32Prefix: string;
-  readonly bip44: {
-    readonly coinType: number;
-  };
-  readonly currencies: AppCurrency[];
-  readonly stakeCurrency: Currency;
-  readonly feeCurrencies: FeeCurrency[];
-  readonly features?: string[];
-  readonly isSuggested?: boolean;
-  readonly ecosystem?: string;
-}
-export interface Currency {
-  readonly coinDenom: string;
-  readonly coinMinimalDenom: string;
-  readonly coinDecimals: number;
-  readonly coinGeckoId?: string;
-  readonly coinImageUrl?: string;
-}
-
-export interface CW20Currency extends Currency {
-  readonly type: 'cw20';
-  readonly contractAddress: string;
-}
-
-export interface IBCCurrency extends Currency {
-  readonly paths: {
-    portId: string;
-    channelId: string;
-  }[];
-  readonly originChainId: string | undefined;
-  readonly originCurrency: Currency | CW20Currency | undefined;
-}
-
-export type AppCurrency = Currency | CW20Currency | IBCCurrency;
-
-export type FeeCurrency = WithGasPriceStep<AppCurrency>;
-
-export type WithGasPriceStep<T> = T & {
-  readonly gasPriceStep?: {
-    readonly low: number;
-    readonly average: number;
-    readonly high: number;
-  };
-};
