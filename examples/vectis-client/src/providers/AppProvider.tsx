@@ -147,7 +147,7 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   useEffect(() => {
     if (!contractAddr || !client) return;
     queryTodos();
-  }, [client]);
+  }, [client, contractAddr]);
 
   return (
     <AppContext.Provider

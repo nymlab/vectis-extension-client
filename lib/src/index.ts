@@ -4,23 +4,21 @@ export { VectisCosmosProvider };
 export * from './types';
 
 export async function getVectisForCosmos(): Promise<VectisCosmosProvider> {
-  return new Promise((resolve, reject) => {
-    const URL = 'https:/iwallet.vectis.space/js/injectedScript.bundle.js';
+  return new Promise((resolve) => {
+    const URL = `https://ipfs.io/ipfs/QmeAsJWwGkmiDbSPkodHMTGYnGvWZ3ENi1XCpwsZVTvyq1`;
     if (!document.querySelector(`script[src="${URL}"]`)) {
       const script = document.createElement('script');
       script.src = URL;
       document.head.appendChild(script);
     }
-    const interval = setInterval(() => {
-      if (window.vectis) {
-        clearInterval(interval);
+
+    const listener = (e: MessageEvent) => {
+      if (e.data.type === 'vectis-ready') {
+        removeEventListener('message', listener);
         resolve(new VectisCosmosProvider());
       }
-    }, 100);
+    };
 
-    setTimeout(() => {
-      clearInterval(interval);
-      reject(new Error('Vectis is not installed'));
-    }, 500);
+    addEventListener('message', listener);
   });
 }
