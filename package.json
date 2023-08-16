@@ -1,6 +1,6 @@
 {
     "name": "@vectis/client",
-    "version": "0.7.0",
+    "version": "0.8.0",
     "description": "Client for vectis extension",
     "license": "Apache-2.0",
     "private": true,
