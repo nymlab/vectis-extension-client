@@ -1,4 +1,4 @@
-import React, { PropsWithChildren } from "react";
+import React, { PropsWithChildren, useState } from "react";
 import { useAppContext } from "../../providers/AppProvider";
 import { GradientButton } from "../Buttons";
 import { FiGithub } from "react-icons/fi";
@@ -11,6 +11,16 @@ const chains = [
 
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const { connectWallet, userKey, chain, setChain } = useAppContext();
+  const [isLoading, setIsLoading] = useState(false);
+
+  const connect = async () => {
+    setIsLoading(true);
+    try {
+      await connectWallet();
+    } catch (err) {}
+    setIsLoading(false);
+  };
+
   return (
     <div className="flex flex-col min-h-screen justify-between">
       <nav className="max-w-[1000px] p-4 mx-auto w-full flex items-center justify-between gap-4">
@@ -30,7 +40,13 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         <div className="flex max-w-[1000px] w-full mx-auto p-4 h-full flex-1">{children}</div>
       ) : (
         <div className="flex items-center justify-center flex-1">
-          <GradientButton onClick={connectWallet}>Log in!</GradientButton>
+          <GradientButton onClick={connect} className="min-w-[85px] min-h-[35px] flex justify-center items-center">
+            {isLoading ? (
+              <div className="rounded-full animate-spin border-2 border-solid border-black border-t-transparent h-6 w-6" />
+            ) : (
+              <p>Log in!</p>
+            )}
+          </GradientButton>
         </div>
       )}
       <footer className="w-full h-[5rem] bg-gradient-to-r from-amber-400 via-pink-400 to-indigo-500 flex items-center justify-center mt-[6rem]">
