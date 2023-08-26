@@ -70,7 +70,7 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   const connectWallet = async () => {
     try {
-      const vectis = await getVectisForCosmos();
+      const vectis = await getVectisForCosmos(import.meta.env.VITE_INJECTED_URI);
       await vectis.enable(chain);
       // Enable connection to allow read and write permission;
       const key = await vectis.getKey(chain);
