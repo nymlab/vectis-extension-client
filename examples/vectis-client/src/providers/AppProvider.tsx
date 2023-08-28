@@ -139,15 +139,8 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   }, [chain]);
 
   useEffect(() => {
-    if (!vectisClient) return;
-    vectisClient.onAccountChange(connectWallet);
-    return () => vectisClient.offAccountChange(connectWallet);
-  }, [vectisClient]);
-
-  useEffect(() => {
-    if (!contractAddr || !client) return;
     queryTodos();
-  }, [client, contractAddr]);
+  }, [contractAddr]);
 
   return (
     <AppContext.Provider
