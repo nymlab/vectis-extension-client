@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useLocalStorage } from "react-use";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { GasPrice } from "@cosmjs/stargate";
-import { VectisCosmosProvider, getVectisForCosmos, KeyInfo } from "@vectis/extension-client";
+import { VectisCosmosProvider, getVectisForCosmos, AccountInfo } from "@vectis/extension-client";
 
 import { ITodo } from "../interfaces/ITodo";
 import { TodoStatus } from "../interfaces/TodoStatus";
@@ -25,7 +25,7 @@ const CHAIN_CONFIG = {
 };
 
 interface AppContextValue {
-  userKey: KeyInfo | null;
+  userKey: AccountInfo | null;
   connectWallet: () => void;
   todos: ITodo[];
   addTodo: (description: string) => void;
@@ -44,7 +44,7 @@ export const AppContext = React.createContext<AppContextValue | null>(null);
 const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [todos, setTodos] = useState<ITodo[]>([]);
   const [chain, setChain] = useState("uni-6");
-  const [userKey, setUserKey] = useState<KeyInfo | null>(null);
+  const [userKey, setUserKey] = useState<AccountInfo | null>(null);
   const [vectisClient, setVectisClient] = useState<VectisCosmosProvider | null>(null);
   const [client, setClient] = useState<SigningCosmWasmClient | null>(null);
   const [allowPermission, setAllowPermission] = useLocalStorage<boolean>("allowPermission");
@@ -73,9 +73,9 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
       const vectis = await getVectisForCosmos(import.meta.env.VITE_INJECTED_URI);
       await vectis.enable(chain);
       // Enable connection to allow read and write permission;
-      const key = await vectis.getKey(chain);
+      const key = await vectis.getAccount(chain);
       // This method decide for you what is the best signer to sign transaction
-      const signer = await vectis.getOfflineSignerAuto(chain);
+      const signer = vectis.getOfflineSigner(chain);
 
       const config = CHAIN_CONFIG[chain as keyof typeof CHAIN_CONFIG];
       const client = await SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {

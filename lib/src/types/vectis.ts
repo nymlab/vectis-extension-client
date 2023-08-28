@@ -1,5 +1,4 @@
 import {
-  AccountData,
   AminoSignResponse,
   DirectSignResponse,
   OfflineAminoSigner,
@@ -10,20 +9,19 @@ import {
   Algo
 } from './cosmos';
 
-export interface KeyInfo {
+export interface AccountInfo {
   algo: Algo;
   name: string;
-  // Vectis accounts use controller pub key
-  pubKey: Uint8Array;
+  // random key in order to be compatible with CosmJS
+  pubkey: Uint8Array;
   address: string;
-  isNanoLedger: boolean;
   isVectisAccount: boolean;
 }
 
 export interface CosmosProvider {
   enable(chainId: string): Promise<void>;
-  getKey(chainId: string): Promise<KeyInfo>;
-  getAccounts(chainId: string): Promise<AccountData[]>;
+  getAccount(chainId: string): Promise<AccountInfo>;
+  getAccounts(chainId: string): Promise<AccountInfo[]>;
   signAmino(signerAddress: string, doc: StdSignDoc): Promise<AminoSignResponse>;
   signDirect(signerAddress: string, doc: SignDoc): Promise<DirectSignResponse>;
   getOfflineSignerAmino(chainId: string): OfflineAminoSigner;

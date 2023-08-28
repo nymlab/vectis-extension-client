@@ -1,16 +1,15 @@
-import { AccountData, AminoSignResponse, DirectSignResponse, OfflineAminoSigner, OfflineDirectSigner, OfflineSigner, SignDoc, StdSignDoc, Algo } from './cosmos';
-export interface KeyInfo {
+import { AminoSignResponse, DirectSignResponse, OfflineAminoSigner, OfflineDirectSigner, OfflineSigner, SignDoc, StdSignDoc, Algo } from './cosmos';
+export interface AccountInfo {
     algo: Algo;
     name: string;
-    pubKey: Uint8Array;
+    pubkey: Uint8Array;
     address: string;
-    isNanoLedger: boolean;
     isVectisAccount: boolean;
 }
 export interface CosmosProvider {
     enable(chainId: string): Promise<void>;
-    getKey(chainId: string): Promise<KeyInfo>;
-    getAccounts(chainId: string): Promise<AccountData[]>;
+    getAccount(chainId: string): Promise<AccountInfo>;
+    getAccounts(chainId: string): Promise<AccountInfo[]>;
     signAmino(signerAddress: string, doc: StdSignDoc): Promise<AminoSignResponse>;
     signDirect(signerAddress: string, doc: SignDoc): Promise<DirectSignResponse>;
     getOfflineSignerAmino(chainId: string): OfflineAminoSigner;

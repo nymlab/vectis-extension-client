@@ -1,5 +1,4 @@
 import {
-  AccountData,
   AminoSignResponse,
   DirectSignResponse,
   OfflineSigner,
@@ -8,7 +7,7 @@ import {
   SignDoc,
   StdSignDoc
 } from '../types/cosmos';
-import { KeyInfo, CosmosProvider } from '../types';
+import { AccountInfo, CosmosProvider } from '../types';
 
 export class VectisCosmosProvider {
   getClient(): CosmosProvider {
@@ -20,11 +19,11 @@ export class VectisCosmosProvider {
     await this.getClient().enable(chainId);
   }
 
-  async getKey(chainId: string): Promise<KeyInfo> {
-    return await this.getClient().getKey(chainId);
+  async getAccount(chainId: string): Promise<AccountInfo> {
+    return await this.getClient().getAccount(chainId);
   }
 
-  async getAccount(chainId: string): Promise<AccountData[]> {
+  async getAccounts(chainId: string): Promise<AccountInfo[]> {
     return await this.getClient().getAccounts(chainId);
   }
 
@@ -34,10 +33,6 @@ export class VectisCosmosProvider {
 
   async signDirect(signerAddress: string, doc: SignDoc): Promise<DirectSignResponse> {
     return await this.getClient().signDirect(signerAddress, doc);
-  }
-
-  async getOfflineSignerAuto(chainId: string): Promise<OfflineSigner> {
-    return await this.getClient().getOfflineSignerAuto(chainId);
   }
 
   getOfflineSignerAmino(chainId: string): OfflineAminoSigner {
@@ -50,13 +45,5 @@ export class VectisCosmosProvider {
 
   getOfflineSigner(chainId: string): OfflineSigner {
     return this.getClient().getOfflineSigner(chainId);
-  }
-
-  onAccountChange(handler: EventListener): void {
-    window.addEventListener('vectis_accountChanged', handler);
-  }
-
-  offAccountChange(handler: EventListener): void {
-    window.removeEventListener('vectis_accountChanged', handler);
   }
 }
