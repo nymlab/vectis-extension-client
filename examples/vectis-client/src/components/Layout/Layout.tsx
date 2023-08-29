@@ -3,6 +3,7 @@ import { useAppContext } from "../../providers/AppProvider";
 import { GradientButton } from "../Buttons";
 import { FiGithub } from "react-icons/fi";
 import SimpleDropdown from "../Dropdowns/SimpleDropdown";
+import { IntlAddress } from "../../utils/intl";
 
 const chains = [
   { name: "Juno Testnet", chainId: "uni-6" },
@@ -31,7 +32,7 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
               TODO's
             </p>
             <div className="text-white text-md flex gap-2 justify-center items-center mx-4">
-              {userKey.name}{" "}
+              {IntlAddress(userKey.address)}
               <SimpleDropdown options={chains.map(({ name, chainId }) => ({ name, click: () => setChain(chainId) }))}>
                 {chains.find((c) => c.chainId === chain)?.name}
               </SimpleDropdown>
