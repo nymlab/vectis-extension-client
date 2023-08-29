@@ -11,6 +11,7 @@ import { TodoStatus } from "../interfaces/TodoStatus";
 const CODES_ID = {
   "uni-6": 2545,
   "elgafar-1": 2609,
+  "osmo-test-5": 3634,
 };
 
 const CHAIN_CONFIG = {
@@ -21,6 +22,10 @@ const CHAIN_CONFIG = {
   "elgafar-1": {
     gasPrice: GasPrice.fromString("0.04ustars"),
     rpcUrl: "https://rpc.testcosmos.directory/stargazetestnet",
+  },
+  "osmo-test-5": {
+    gasPrice: GasPrice.fromString("0.025uosmo"),
+    rpcUrl: "https://rpc.testcosmos.directory/osmosistestnet",
   },
 };
 

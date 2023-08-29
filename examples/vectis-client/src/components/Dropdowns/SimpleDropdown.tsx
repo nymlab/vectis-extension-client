@@ -43,10 +43,10 @@ const SimpleDropdown: React.FC<PropsWithChildren<DropdownProps>> = ({ options, c
   });
 
   return (
-    <div className="relative w-full" ref={dropdownRef}>
+    <div className="relative w-fit" ref={dropdownRef}>
       <button
         className={clsx(
-          `w-[120px] bg-transparent rounded-[4px] text-white hover:bg-white/5 flex items-center justify-between gap-2 p-2 transition duration-75 ease-in-out border border-slate-50`
+          `w-[170px] bg-transparent rounded-[4px] text-white hover:bg-white/5 flex items-center justify-between p-2 transition duration-75 ease-in-out border border-slate-50`
         )}
         type="button"
         onClick={() => setOpen(!open)}
