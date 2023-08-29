@@ -42,6 +42,7 @@ interface AppContextValue {
   updateTodoStatus: (id: number, status: TodoStatus) => void;
   setChain: (chain: string) => void;
   chain: string;
+  isLoading: boolean;
 }
 
 export const AppContext = React.createContext<AppContextValue | null>(null);
@@ -51,6 +52,7 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [chain, setChain] = useState("uni-6");
   const [userKey, setUserKey] = useState<AccountInfo | null>(null);
   const [vectisClient, setVectisClient] = useState<VectisCosmosProvider | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
   const [client, setClient] = useState<SigningCosmWasmClient | null>(null);
   const [allowPermission, setAllowPermission] = useLocalStorage<boolean>("allowPermission");
   const [contractAddr, setContractAddr] = useLocalStorage<string>(`${userKey?.address}contractAddr`);
@@ -75,6 +77,7 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
   const connectWallet = async () => {
     try {
+      setIsLoading(true);
       const vectis = await getVectisForCosmos(import.meta.env.VITE_INJECTED_URI);
       await vectis.enable(chain);
       // Enable connection to allow read and write permission;
@@ -95,6 +98,7 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
       console.log(err);
       toast.error(err as string);
     }
+    setIsLoading(false);
   };
 
   const queryTodos = async () => {
@@ -162,6 +166,7 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         updateTodoStatus,
         chain,
         setChain,
+        isLoading,
       }}
     >
       {children}

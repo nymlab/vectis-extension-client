@@ -12,16 +12,7 @@ const chains = [
 ];
 
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-  const { connectWallet, userKey, chain, setChain } = useAppContext();
-  const [isLoading, setIsLoading] = useState(false);
-
-  const connect = async () => {
-    setIsLoading(true);
-    try {
-      await connectWallet();
-    } catch (err) {}
-    setIsLoading(false);
-  };
+  const { connectWallet, userKey, chain, setChain, isLoading } = useAppContext();
 
   return (
     <div className="flex flex-col min-h-screen justify-between">
@@ -32,7 +23,11 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
               TODO's
             </p>
             <div className="text-white text-md flex gap-2 justify-center items-center mx-4">
-              {IntlAddress(userKey.address)}
+              {isLoading ? (
+                <div className="rounded-full animate-spin border-2 border-solid border-white border-t-transparent h-6 w-6" />
+              ) : (
+                IntlAddress(userKey.address)
+              )}
               <SimpleDropdown options={chains.map(({ name, chainId }) => ({ name, click: () => setChain(chainId) }))}>
                 {chains.find((c) => c.chainId === chain)?.name}
               </SimpleDropdown>
@@ -44,7 +39,7 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         <div className="flex max-w-[1000px] w-full mx-auto p-4 h-full flex-1">{children}</div>
       ) : (
         <div className="flex items-center justify-center flex-1">
-          <GradientButton onClick={connect} className="min-w-[85px] min-h-[35px] flex justify-center items-center">
+          <GradientButton onClick={connectWallet} className="min-w-[85px] min-h-[35px] flex justify-center items-center">
             {isLoading ? (
               <div className="rounded-full animate-spin border-2 border-solid border-black border-t-transparent h-6 w-6" />
             ) : (
