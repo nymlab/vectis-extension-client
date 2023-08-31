@@ -83,9 +83,10 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
       // Enable connection to allow read and write permission;
       const key = await vectis.getAccount(chain);
       // This method decide for you what is the best signer to sign transaction
-      const signer = vectis.getOfflineSigner(chain);
+      const signer = vectis.getOfflineSignerDirect(chain);
 
       const config = CHAIN_CONFIG[chain as keyof typeof CHAIN_CONFIG];
+
       const client = await SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
         gasPrice: config.gasPrice,
       });
