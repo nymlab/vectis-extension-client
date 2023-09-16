@@ -1,15 +1,16 @@
 import { AminoSignResponse, DirectSignResponse, OfflineAminoSigner, OfflineDirectSigner, OfflineSigner, SignDoc, StdSignDoc, Algo } from './cosmos';
-export interface AccountInfo {
-    algo: Algo;
+export type AccountType = 'vectis' | 'ica' | 'eoa';
+export interface VectisAccountData<T = 'vectis'> {
+    algo: T extends 'eoa' ? Algo : null;
     name: string;
-    pubkey: Uint8Array;
+    pubkey: T extends 'eoa' ? Uint8Array : null;
     address: string;
-    isVectisAccount: boolean;
+    type: AccountType;
 }
 export interface CosmosProvider {
     enable(chainId: string): Promise<void>;
-    getAccount(chainId: string): Promise<AccountInfo>;
-    getAccounts(chainId: string): Promise<AccountInfo[]>;
+    getAccount(chainId: string): Promise<VectisAccountData>;
+    getAccounts(chainId: string): Promise<VectisAccountData[]>;
     signAmino(signerAddress: string, doc: StdSignDoc): Promise<AminoSignResponse>;
     signDirect(signerAddress: string, doc: SignDoc): Promise<DirectSignResponse>;
     getOfflineSignerAmino(chainId: string): OfflineAminoSigner;

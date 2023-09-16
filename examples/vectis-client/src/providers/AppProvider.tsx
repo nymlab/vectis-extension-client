@@ -3,7 +3,7 @@ import toast from "react-hot-toast";
 import { useLocalStorage } from "react-use";
 import { SigningCosmWasmClient } from "@cosmjs/cosmwasm-stargate";
 import { GasPrice } from "@cosmjs/stargate";
-import { VectisCosmosProvider, getVectisForCosmos, AccountInfo } from "@vectis/extension-client";
+import { VectisCosmosClient, setupWithVectisExtension, getVectisForCosmos, VectisAccountData } from "@vectis/extension-client";
 
 import { ITodo } from "../interfaces/ITodo";
 import { TodoStatus } from "../interfaces/TodoStatus";
@@ -30,7 +30,7 @@ const CHAIN_CONFIG = {
 };
 
 interface AppContextValue {
-  userKey: AccountInfo | null;
+  userKey: VectisAccountData | null;
   connectWallet: () => void;
   todos: ITodo[];
   addTodo: (description: string) => void;
@@ -50,8 +50,8 @@ export const AppContext = React.createContext<AppContextValue | null>(null);
 const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
   const [todos, setTodos] = useState<ITodo[]>([]);
   const [chain, setChain] = useState("uni-6");
-  const [userKey, setUserKey] = useState<AccountInfo | null>(null);
-  const [vectisClient, setVectisClient] = useState<VectisCosmosProvider | null>(null);
+  const [userKey, setUserKey] = useState<VectisAccountData | null>(null);
+  const [vectisClient, setVectisClient] = useState<VectisCosmosClient | null>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [client, setClient] = useState<SigningCosmWasmClient | null>(null);
   const [allowPermission, setAllowPermission] = useLocalStorage<boolean>("allowPermission");
@@ -87,9 +87,11 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
 
       const config = CHAIN_CONFIG[chain as keyof typeof CHAIN_CONFIG];
 
-      const client = await SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
-        gasPrice: config.gasPrice,
-      });
+      const client = setupWithVectisExtension(
+        await SigningCosmWasmClient.connectWithSigner(config.rpcUrl, signer, {
+          gasPrice: config.gasPrice,
+        })
+      );
 
       setUserKey(key);
       setVectisClient(vectis);
@@ -97,7 +99,7 @@ const AppProvider: React.FC<PropsWithChildren<{}>> = ({ children }) => {
       setAllowPermission(true);
     } catch (err) {
       console.log(err);
-      toast.error(err as string);
+      // toast.error(err as string);
     }
     setIsLoading(false);
   };

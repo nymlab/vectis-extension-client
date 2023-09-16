@@ -84,6 +84,25 @@ export interface SignDoc {
   accountNumber: Long;
 }
 
+export interface TxRaw {
+  /**
+   * body_bytes is a protobuf serialization of a TxBody that matches the
+   * representation in SignDoc.
+   */
+  bodyBytes: Uint8Array;
+  /**
+   * auth_info_bytes is a protobuf serialization of an AuthInfo that matches the
+   * representation in SignDoc.
+   */
+  authInfoBytes: Uint8Array;
+  /**
+   * signatures is a list of signatures that matches the length and order of
+   * AuthInfo's signer_infos to allow connecting signature meta information like
+   * public key and signing mode by position.
+   */
+  signatures: Uint8Array[];
+}
+
 export interface OfflineDirectSigner {
   readonly getAccounts: () => Promise<readonly AccountData[]>;
   readonly signDirect: (signerAddress: string, signDoc: SignDoc) => Promise<DirectSignResponse>;
