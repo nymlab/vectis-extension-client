@@ -7,9 +7,9 @@ import {
   SignDoc,
   StdSignDoc
 } from '../types/cosmos';
-import { AccountInfo, CosmosProvider } from '../types';
+import { VectisAccountData, CosmosProvider } from '../types';
 
-export class VectisCosmosProvider {
+export class VectisCosmosClient {
   getClient(): CosmosProvider {
     if (window.vectis?.cosmos) return window.vectis.cosmos;
     throw new Error('Vectis is not installed');
@@ -19,11 +19,11 @@ export class VectisCosmosProvider {
     await this.getClient().enable(chainId);
   }
 
-  async getAccount(chainId: string): Promise<AccountInfo> {
+  async getAccount(chainId: string): Promise<VectisAccountData> {
     return await this.getClient().getAccount(chainId);
   }
 
-  async getAccounts(chainId: string): Promise<AccountInfo[]> {
+  async getAccounts(chainId: string): Promise<VectisAccountData[]> {
     return await this.getClient().getAccounts(chainId);
   }
 
