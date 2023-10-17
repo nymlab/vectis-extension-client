@@ -12,7 +12,10 @@ interface DropdownProps {
   }[];
 }
 
-const SimpleDropdown: React.FC<PropsWithChildren<DropdownProps>> = ({ options, children }) => {
+const SimpleDropdown: React.FC<PropsWithChildren<DropdownProps>> = ({
+  options,
+  children,
+}) => {
   const [open, setOpen] = useState<boolean>(false);
   const dropdownRef = useRef(null);
 
@@ -46,17 +49,27 @@ const SimpleDropdown: React.FC<PropsWithChildren<DropdownProps>> = ({ options, c
     <div className="relative w-fit" ref={dropdownRef}>
       <button
         className={clsx(
-          `w-[170px] bg-transparent rounded-[4px] text-white hover:bg-white/5 flex items-center justify-between p-2 transition duration-75 ease-in-out border border-slate-50`
+          `w-[140px] bg-transparent rounded-[4px] text-white hover:bg-white/5 flex items-center justify-between p-2 transition duration-75 ease-in-out border border-slate-50`
         )}
         type="button"
         onClick={() => setOpen(!open)}
       >
         {children}
-        <div className={clsx("flex items-center transition duration-75 ease-in-out right-[80px]", open ? "rotate-180" : "")}>
+        <div
+          className={clsx(
+            "flex items-center transition duration-75 ease-in-out right-[80px]",
+            open ? "rotate-180" : ""
+          )}
+        >
           <MdOutlineKeyboardArrowDown size={24} />
         </div>
       </button>
-      <ul className={clsx(`absolute left-0 bg-slate-700 z-50 float text-left rounded-[4px] m-0 bg-clip-padding w-full`, !open && "hidden")}>
+      <ul
+        className={clsx(
+          `absolute left-0 bg-slate-700 z-50 float text-left rounded-[4px] m-0 bg-clip-padding w-full`,
+          !open && "hidden"
+        )}
+      >
         {OptionsItems}
       </ul>
     </div>

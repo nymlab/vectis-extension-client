@@ -12,15 +12,16 @@ const chains = [
 ];
 
 const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
-  const { connectWallet, userKey, chain, setChain, isLoading } = useAppContext();
+  const { connectWallet, userKey, chain, setChain, isLoading } =
+    useAppContext();
 
   return (
-    <div className="flex flex-col min-h-screen justify-between">
+    <div className="flex flex-col min-h-[80vh] justify-between">
       <nav className="max-w-[1000px] p-4 mx-auto w-full flex items-center justify-between gap-2">
         {userKey && (
           <>
-            <p className="font-extrabold text-transparent text-3xl bg-clip-text bg-gradient-to-r from-amber-400 via-pink-400 to-indigo-500">
-              TODO's
+            <p className="font-extrabold text-transparent text-1xl bg-clip-text bg-gradient-to-r from-amber-400 via-pink-400 to-indigo-500">
+              TODO List
             </p>
             <div className="text-white text-md flex gap-2 justify-center items-center mx-4">
               {isLoading ? (
@@ -28,7 +29,12 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
               ) : (
                 IntlAddress(userKey.address)
               )}
-              <SimpleDropdown options={chains.map(({ name, chainId }) => ({ name, click: () => setChain(chainId) }))}>
+              <SimpleDropdown
+                options={chains.map(({ name, chainId }) => ({
+                  name,
+                  click: () => setChain(chainId),
+                }))}
+              >
                 {chains.find((c) => c.chainId === chain)?.name}
               </SimpleDropdown>
             </div>
@@ -36,10 +42,15 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
         )}
       </nav>
       {userKey ? (
-        <div className="flex max-w-[1000px] w-full mx-auto p-4 h-full flex-1">{children}</div>
+        <div className="flex max-w-[1000px] w-full mx-auto p-4 h-full flex-1">
+          {children}
+        </div>
       ) : (
         <div className="flex items-center justify-center flex-1">
-          <GradientButton onClick={connectWallet} className="min-w-[85px] min-h-[35px] flex justify-center items-center">
+          <GradientButton
+            onClick={connectWallet}
+            className="min-w-[85px] min-h-[35px] flex justify-center items-center"
+          >
             {isLoading ? (
               <div className="rounded-full animate-spin border-2 border-solid border-black border-t-transparent h-6 w-6" />
             ) : (
