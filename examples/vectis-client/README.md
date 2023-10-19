@@ -11,3 +11,5 @@ Then you can add the `.env` file for this example as `VITE_INJECTED_URI=http://l
 ### Using testnet and deployed wallet
 
 You can add the `.env` file for this example as `VITE_INJECTED_URI=http://localhost:3001/js/injectedScript.js`.
+
+**NOTE:** the `injectedScript.js` from `localhost:3001` is built by running `npm run build` - it is not built with `npm run dev`
