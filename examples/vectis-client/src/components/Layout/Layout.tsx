@@ -65,7 +65,7 @@ const Layout: React.FC<PropsWithChildren<{}>> = ({ children }) => {
           href="https://github.com/nymlab/vectis-extension-client"
           target="_blank"
         >
-          <FiGithub size={24} /> Vectis - Example
+          <FiGithub size={24} /> Vectis (Main) - Example
         </a>
       </footer>
     </div>
